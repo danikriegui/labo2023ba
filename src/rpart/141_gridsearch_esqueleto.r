@@ -11,7 +11,7 @@ require("parallel")
 
 PARAM <- list()
 # reemplazar por las propias semillas
-PARAM$semillas <- c(106791, 300177, 654551, 989581, 892287)
+PARAM$semillas <- c(106791, 300177, 654551, 989581, 892287) #Crea la variable tipo lista y despues dentro de esa lista crea un campo semillas y le agrega el vector con 5 elemetnos.
 
 #------------------------------------------------------------------------------
 # particionar agrega una columna llamada fold a un dataset
@@ -30,6 +30,7 @@ particionar <- function(data, division, agrupa = "", campo = "fold", start = 1, 
     by = agrupa
   ]
 }
+# Funcion particionar que tiene dentro del parentesis ciertos parametros. Start es en que registro empieza y la semilla es aleatoria. 
 #------------------------------------------------------------------------------
 
 ArbolEstimarGanancia <- function(semilla, param_basicos) {
@@ -78,8 +79,8 @@ ArbolesMontecarlo <- function(semillas, param_basicos) {
     semillas, # paso el vector de semillas
     MoreArgs = list(param_basicos), # aqui paso el segundo parametro
     SIMPLIFY = FALSE,
-    mc.cores = 1
-  ) # se puede subir a 5 si posee Linux o Mac OS
+    mc.cores = 5
+  ) # se puede subir a 5 si posee Linux o Mac OS. Creamos la maq virtual con 8 cpus.
 
   ganancia_promedio <- mean(unlist(ganancias))
 
@@ -112,37 +113,45 @@ archivo_salida <- "./exp/HT2020/gridsearch.txt"
 cat(
   file = archivo_salida,
   sep = "",
+  "cp", "\t",
   "max_depth", "\t",
   "min_split", "\t",
+  "min_bucket", "\t",
   "ganancia_promedio", "\n"
 )
 
 
 # itero por los loops anidados para cada hiperparametro
 
-for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
-  for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
-    # notar como se agrega
+for (vcp in c(-1, -0.5, 0, 0.1)) {
+  for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
+    for (vmin_split in c(1200, 1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
+      for (vmin_bucket in c(2,4,8,16, 32, vmin_split/4)) {
+        # notar como se agrega
 
-    # vminsplit  minima cantidad de registros en un nodo para hacer el split
-    param_basicos <- list(
-      "cp" = -0.5, # complejidad minima
-      "minsplit" = vmin_split,
-      "minbucket" = 5, # minima cantidad de registros en una hoja
-      "maxdepth" = vmax_depth
-    ) # profundidad máxima del arbol
+        # vminsplit  minima cantidad de registros en un nodo para hacer el split. Parametros del arbol que los crea e param basicos.
+        param_basicos <- list(
+          "cp" = vcp, # complejidad minima
+          "minsplit" = vmin_split,
+          "minbucket" = vmin_bucket, # minima cantidad de registros en una hoja
+          "maxdepth" = vmax_depth
+        ) # profundidad máxima del arbol
 
-    # Un solo llamado, con la semilla 17
-    ganancia_promedio <- ArbolesMontecarlo(ksemillas, param_basicos)
+        # Un solo llamado, con la semilla 17
+        ganancia_promedio <- ArbolesMontecarlo(ksemillas, param_basicos)
 
-    # escribo los resultados al archivo de salida
-    cat(
-      file = archivo_salida,
-      append = TRUE,
-      sep = "",
-      vmax_depth, "\t",
-      vmin_split, "\t",
-      ganancia_promedio, "\n"
-    )
+        # escribo los resultados al archivo de salida
+        cat(
+          file = archivo_salida,
+          append = TRUE,
+          sep = "",
+          vcp, "\t",
+          vmax_depth, "\t",
+          vmin_split, "\t",
+          vmin_bucket, "\t",
+          ganancia_promedio, "\n"
+        )
+      }
+    }
   }
 }
