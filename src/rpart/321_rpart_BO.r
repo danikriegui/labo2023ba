@@ -30,7 +30,7 @@ hs <- makeParamSet(
 )
 # minbuket NO PUEDE ser mayor que la mitad de minsplit
 
-ksemilla_azar <- 106791 # cambiar por la primer semilla
+ksemilla_azar <- 102191 # cambiar por la primer semilla
 
 #------------------------------------------------------------------------------
 # graba a un archivo los componentes de lista
@@ -187,13 +187,13 @@ dataset <- fread("./datasets/dataset_pequeno.csv")
 dataset <- dataset[clase_ternaria != ""]
 
 
-# creo la carpeta donde va el experimento
+# creo la carpeta LOCAL donde va el experimento
 #  HT  representa  Hiperparameter Tuning
-dir.create("./exp/", showWarnings = FALSE)
-dir.create("./exp/HT3210/", showWarnings = FALSE)
+dir.create("~/exp/", showWarnings = FALSE)
+dir.create("~/exp/HT3210/", showWarnings = FALSE)
 
-# Establezco el Working Directory DEL EXPERIMENTO
-setwd("./exp/HT3210/")
+# Establezco el Working Directory LOCAL del experimento
+setwd("~/exp/HT3210/")
 
 
 archivo_log <- "HT321.txt"
@@ -253,4 +253,9 @@ if (!file.exists(archivo_BO)) {
 }
 # retomo en caso que ya exista
 
+# creo la carpeta del experimento en el bucket
+dir.create("~/buckets/b1/exp/", showWarnings = FALSE)
+dir.create("~/buckets/b1/exp/HT3210/", showWarnings = FALSE)
 
+# copio los archivos
+system( "cp -r ~/exp/HT3210/*  ~/buckets/b1/exp/HT3210" )
