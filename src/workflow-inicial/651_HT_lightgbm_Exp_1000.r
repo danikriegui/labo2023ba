@@ -27,7 +27,7 @@ options(error = function() {
 
 # Parametros del script. CAMBIAR NOMBRE DE LA CARPETA, SCRIPT CARPETA NUEVA. 
 PARAM <- list()
-PARAM$experimento <- "HT6510_exp13partec"
+PARAM$experimento <- "HT6510_exp13parteb"
 
 PARAM$exp_input <- "TS6410"
 
@@ -60,7 +60,7 @@ PARAM$lgb_basicos <- list(
   pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
   neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
   is_unbalance = FALSE, #
-  scale_pos_weight = 100, # scale_pos_weight > 0.0
+  scale_pos_weight = 1000, # scale_pos_weight > 0.0
 
   drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
   max_drop = 50, # <=0 means no limit
