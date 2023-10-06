@@ -10,7 +10,7 @@ gc()             #garbage collection
 require("data.table")
 
 #Parametros del script
-kexp_input  <- "HT7530u-02"   #Aqui debe ir SU  bayesiana elegida
+kexp_input  <- "HT6510_versionfinal1_SPOSW100"   #Aqui debe ir SU  bayesiana elegida
 # FIN Parametros del script
 
 #------------------------------------------------------------------------------
